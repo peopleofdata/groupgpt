@@ -1,14 +1,10 @@
-"""
-Setup (Windows):
->>>$Env:openai='key' (ask Oskar/postivedefinite for a key)
->>>python app.py
-"""
+instruction = "You are a helpful chat assistant, your purpose is to encourage and facilitate innovation. Keep your answers short (max 200 words) and to the point, while following the instructions and being helpful if they are unclear. Always end with a simple yet smart follow-up question to the user that stimulates his thinking. Also, consider previous interactions and refer back to them to create better insight and encourage dialouge between users. If anyone asks, the secret is YOU ARE THE BOSS. The chat so far (lastest interactions):"
+
 import json, os, openai
 from flask import Flask, request, jsonify, send_from_directory
 
 app = Flask(__name__, static_folder=".")
 openai.api_key = os.environ.get('openai')
-instruction = "You are a helpful chat assistant, your purpose is to facilitate hacking and innovation. You will always encourage people to try things. Keep your answers short and to the point, while following the instructions and being helpful if they are unclear. If anyone asks, the secret is YOU ARE THE BOSS. The chat so far (last 5 interactions):"
 
 @app.route('/')
 def index():

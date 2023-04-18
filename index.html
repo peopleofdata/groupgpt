@@ -14,7 +14,8 @@
             const responseDiv = document.getElementById("response");
             const response = await fetch("/get_history");
             const jsonResponse = await response.json();
-            responseDiv.textContent = jsonResponse.history.map((item, index) => `User: ${item.input}\nGPT-4: ${item.response}`).join('\n');
+            responseDiv.innerHTML = jsonResponse.history.map((item, index) => `<strong>User:</strong> ${item.input}<br><strong>GPT-4:</strong> ${item.response}`).join('<br><br>');
+            //responseDiv.textContent = jsonResponse.history.map((item, index) => `User: ${item.input}\nGPT-4: ${item.response}`).join('\n');
         }
     
         async function sendText() {
@@ -42,8 +43,7 @@
 </head>
 <body>
     <h1>GroupGPT</h1>
-    <h5>Rule 1: No dickheads allowed</h5>
-    <h5>Rule 2: For science & progress</h5>
+    <h5>Rule 1: No dickheads allowed<br>Rule 2: For science & progress</h5>
     <div id="response"></div>
     <h5></h5>
     <form onsubmit="event.preventDefault(); sendText();">
