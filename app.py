@@ -1,6 +1,6 @@
 """
 Setup (Windows):
->>>$Env:openai='sk-m0Rf61S0m3rLgrOJhfFlT3BlbkFJBdObVoF2CCPIppyvoJ' but add '7k' at the end
+>>>$Env:openai='key' (ask Oskar/postivedefinite for a key)
 >>>python app.py
 """
 import json, os, openai
