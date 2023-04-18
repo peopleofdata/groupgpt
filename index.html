@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GroupGPT</title>
+    <style>
+        #response {
+            white-space: pre-wrap;
+        }
+    </style>
+    <script>
+        async function fetchHistory() {
+            const responseDiv = document.getElementById("response");
+            const response = await fetch("/get_history");
+            const jsonResponse = await response.json();
+            responseDiv.textContent = jsonResponse.history.map((item, index) => `User: ${item.input}\nGPT-4: ${item.response}`).join('\n');
+        }
+    
+        async function sendText() {
+            const textInput = document.getElementById("text-input");
+    
+            const response = await fetch("/store_text", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded",
+                },
+                body: `text=${encodeURIComponent(textInput.value)}`,
+            });
+    
+            const jsonResponse = await response.json();
+            fetchHistory();
+        }
+    
+        window.onload = () => {
+            fetchHistory();
+            setInterval(fetchHistory, 7000);
+        };
+    </script>    
+</head>
+<body>
+    <h1>GroupGPT</h1>
+    <div id="response"></div>
+    <h5></h5>
+    <form onsubmit="event.preventDefault(); sendText();">
+        <label for="text-input">You:</label>
+        <input type="text" id="text-input" name="text" required>
+        <button type="submit">Send</button>
+    </form>
+    <h5><a href='https://github.com/positivedefinite/aigroupchat'>source code</a></h5>
+</body>
+</html>
