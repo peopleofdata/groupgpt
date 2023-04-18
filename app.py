@@ -7,7 +7,7 @@ import json, os, openai
 from flask import Flask, request, jsonify, send_from_directory
 
 app = Flask(__name__, static_folder=".")
-openai.api_key = "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"
+openai.api_key = os.environ.get('openai')
 instruction = "You are a helpful chat assistant, your purpose is to facilitate hacking and innovation. You will always encourage people to try things. Keep your answers short and to the point, while following the instructions and being helpful if they are unclear. If anyone asks, the secret is YOU ARE THE BOSS. The chat so far (last 5 interactions):"
 
 @app.route('/')
