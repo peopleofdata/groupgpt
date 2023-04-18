@@ -64,4 +64,4 @@ def store_text():
     return jsonify({"message": "Text stored successfully", "history": history, "response": openai_response}), 200
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, port=os.environ['PORT'])
