@@ -19,7 +19,8 @@
     
         async function sendText() {
             const textInput = document.getElementById("text-input");
-    
+            const sendButton = document.getElementById('sendButton');
+            sendButton.disabled = true;
             const response = await fetch("/store_text", {
                 method: "POST",
                 headers: {
@@ -30,6 +31,7 @@
     
             const jsonResponse = await response.json();
             fetchHistory();
+            sendButton.disabled = false;
         }
     
         window.onload = () => {
@@ -45,7 +47,7 @@
     <form onsubmit="event.preventDefault(); sendText();">
         <label for="text-input">You:</label>
         <input type="text" id="text-input" name="text" required>
-        <button type="submit">Send</button>
+        <button type="submit" id="sendButton">Send</button>
     </form>
     <h5><a href='https://github.com/positivedefinite/aigroupchat'>source code</a></h5>
 </body>
