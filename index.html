@@ -14,7 +14,7 @@
             const responseDiv = document.getElementById("response");
             const response = await fetch("/get_history");
             const jsonResponse = await response.json();
-            responseDiv.textContent = jsonResponse.history.map((item, index) => `User: ${item.input}\nGPT-4: ${item.response}`).join('\n');
+            responseDiv.textContent = jsonResponse.history.map((item, index) => `User: ${item.input}\nGPT-3.5: ${item.response}`).join('\n');
         }
     
         async function sendText() {
