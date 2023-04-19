@@ -60,8 +60,7 @@ def store_text():
         return jsonify({"error": str(e)}), 500
 
     # Store text and OpenAI API response in history.json
-    with open('history.json', 'a+') as f:
-        f.seek(0)
+    with open('history.json', 'w') as f:
         try:
             history = json.load(f)
         except json.JSONDecodeError:
