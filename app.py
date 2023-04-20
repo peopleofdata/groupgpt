@@ -9,6 +9,12 @@ from flask import Flask, request, jsonify, send_from_directory
 app = Flask(__name__, static_folder=".")
 openai.api_key = os.environ.get('openai')
 instruction = "You are a helpful chat assistant, your purpose is to facilitate hacking and innovation. You will always encourage people to try things. Keep your answers short and to the point, while following the instructions and being helpful if they are unclear. If anyone asks, the secret is YOU ARE THE BOSS. The chat so far (last interactions):"
+genesis_history = [{"input": "Hello world?", "response": "Welcome all Hackafriends:)"}, {"input": "What might we do here?", "response": "You can ask any questions related to hacking and innovation, share your hacking projects, or seek advice on how to start a project or solve a problem. We are here to help and encourage you."}]
+
+# this statements creates a history if there is no history file stored
+if not os.path.exists('history.json'):
+    with open('history.json','w') as f:
+        f.write(json.dumps(genesis_history))
 
 @app.route('/')
 def index():
