@@ -16,6 +16,9 @@ def index():
 
 @app.route('/get_history', methods=['GET'])
 def get_history():
+    if not os.path.exists('history.json'):
+        return jsonify({"history": []}), 200
+
     with open('history.json', 'r') as f:
         try:
             history = json.load(f)
@@ -30,8 +33,16 @@ def store_text():
     if not text:
         return jsonify({"error": "Text not provided"}), 400
 
-    with open('history.json', 'r') as f:
-        history = json.load(f)
+    if not os.path.exists('history.json'):
+        history = []
+    else:
+        with open('history.json', 'r') as f:
+            history = json.load(f)
+
+    # Update and save the chat history
+    history.append(text)
+    with open('history.json', 'w') as f:
+        json.dump(history, f)
 
     max_history_length = min(len(history), 7)
 
@@ -49,8 +60,7 @@ def store_text():
         return jsonify({"error": str(e)}), 500
 
     # Store text and OpenAI API response in history.json
-    with open('history.json', 'a+') as f:
-        f.seek(0)
+    with open('history.json', 'w') as f:
         try:
             history = json.load(f)
         except json.JSONDecodeError:
