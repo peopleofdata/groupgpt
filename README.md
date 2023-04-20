@@ -1,5 +1,10 @@
 # groupgpt
 
+
+https://user-images.githubusercontent.com/28109194/233235267-5d9abb7d-2ca4-44a1-b088-9d25a3018c40.mp4
+
+
+
 ChatGPT only allows one person to talk to it. But what if multiple people could share one session?
 
 Aside from a lot of swearing, I hope this collaborative approach makes things more interesting ;)
