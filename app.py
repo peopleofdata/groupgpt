@@ -7,7 +7,7 @@ import json, os, openai
 from datetime import datetime
 from flask import Flask, request, jsonify, send_from_directory
 
-app = Flask(__name__, static_folder=".")
+app = Flask(__name__, static_folder=".", static_url_path='')
 openai.api_key = os.environ.get('openai')
 def instruction(background_info, top_history):
     return f"You are a helpful chat assistant, your purpose is to facilitate hacking and innovation. You will always encourage people to try things. You will moderate the discussion, cross-referencing responses of different users and encouraging dialogue about previous statements. Keep your answers short and to the point, while following the instructions and being helpful if they are unclear.\nSome background info for you: {background_info}\nThe chat so far (last interactions):{top_history}"
