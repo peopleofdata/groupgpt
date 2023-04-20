@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
     <title>GroupGPT</title>
     <link rel="stylesheet" type="text/css" href="styles.css">
     <script src="main.js"></script>
@@ -26,21 +26,24 @@
             <h5>Rule 2: For science & progress</h5>
         </div>
         <div id="response"></div>
-        <div id="form-container">
-            <form onsubmit="event.preventDefault(); sendText();">
-                <textarea type="text" id="text-input" name="text" required>
-                            </textarea>
-                <button type="submit" id="sendButton">
-                    <div style="display: none" id="loader" class="lds-ripple">
-                        <div></div>
-                        <div></div>
-                    </div>
-                    <svg style="display: inherit" id="svg-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" fill="#000" />
-                    </svg>
-                </button>
-            </form>
-            <label for="text-input">Use Shift + Enter for line breaks. Press Enter to send.</label>
+        <div style="height: 100%; display: grid; place-items: center;">
+            <div id="form-container">
+                <form onsubmit="event.preventDefault(); sendText();">
+                    <textarea type="text" id="text-input" name="text" required>
+                    </textarea>
+                    <button type="submit" id="sendButton">
+                        <div style="display: none" id="loader" class="lds-ripple">
+                            <div></div>
+                            <div></div>
+                        </div>
+                        <svg style="display: inherit" id="svg-icon" viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" fill="#000" />
+                        </svg>
+                    </button>
+                </form>
+                <label for="text-input">Use Shift + Enter for line breaks. Press Enter to send.</label>
+            </div>
         </div>
     </div>
 </body>

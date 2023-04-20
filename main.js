@@ -95,7 +95,7 @@ window.onload = () => {
     const responseDiv = document.getElementById("response");
     responseDiv.scrollTop = responseDiv.scrollHeight;
   });
-  //   setInterval(fetchHistory, 7000);
+  setInterval(fetchHistory, 7000);
   var textarea = document.getElementById("text-input");
   textarea.value = "";
   textarea.addEventListener("keydown", function (event) {
