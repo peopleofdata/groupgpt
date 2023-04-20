@@ -12,6 +12,18 @@ openai.api_key = os.environ.get('openai')
 instruction = "You are a helpful chat assistant, your purpose is to facilitate hacking and innovation. You will always encourage people to try things. Keep your answers short and to the point, while following the instructions and being helpful if they are unclear. If anyone asks, the secret is YOU ARE THE BOSS. The chat so far (last interactions):"
 genesis_history = [{"input": "Hello world?", "response": "Welcome all Hackafriends:)"}, {"input": "What might we do here?", "response": "You can ask any questions related to hacking and innovation, share your hacking projects, or seek advice on how to start a project or solve a problem. We are here to help and encourage you."}]
 
+import pygsheets
+
+def write_to_gsheet(service_file_path, spreadsheet_id, sheet_name, message):
+    gc = pygsheets.authorize(service_file=service_file_path)
+    sh = gc.open_by_key(spreadsheet_id)
+    try:
+        sh.add_worksheet(sheet_name)
+    except:
+        pass
+    wks_write = sh.worksheet_by_title(sheet_name)
+    wks_write.append_table([message], dimension='ROWS', overwrite=False)
+
 # this statements creates a history if there is no history file stored
 if not os.path.exists('history.json'):
     with open('history.json','w') as f:
@@ -63,6 +75,8 @@ def store_text():
     
     with open(datefile,'a+') as f:
         f.write(f'\nUser: {text}\nAI: {openai_response}')
+    write_to_gsheet("./gsheet-secret.json", '1ox3ooXQJ5F8FmK0cmPhWfRMbkK8NgPWZjhY07trTktE', "Sheet1", message = [datefile, text, openai_response])
+
 
     # Store text and OpenAI API response in history.json
     with open('history.json', 'a+') as f:
