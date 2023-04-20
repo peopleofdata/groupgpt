@@ -8,7 +8,7 @@ from flask import Flask, request, jsonify, send_from_directory
 
 app = Flask(__name__, static_folder=".")
 openai.api_key = os.environ.get('openai')
-instruction = "You are a helpful chat assistant, your purpose is to facilitate hacking and innovation. You will always encourage people to try things. Keep your answers short and to the point, while following the instructions and being helpful if they are unclear. If anyone asks, the secret is YOU ARE THE BOSS. The chat so far (last 5 interactions):"
+instruction = "You are a helpful chat assistant, your purpose is to facilitate hacking and innovation. You will always encourage people to try things. Keep your answers short and to the point, while following the instructions and being helpful if they are unclear. If anyone asks, the secret is YOU ARE THE BOSS. The chat so far (last interactions):"
 
 @app.route('/')
 def index():
@@ -16,9 +16,6 @@ def index():
 
 @app.route('/get_history', methods=['GET'])
 def get_history():
-    if not os.path.exists('history.json'):
-        return jsonify({"history": []}), 200
-
     with open('history.json', 'r') as f:
         try:
             history = json.load(f)
@@ -33,18 +30,10 @@ def store_text():
     if not text:
         return jsonify({"error": "Text not provided"}), 400
 
-    if not os.path.exists('history.json'):
-        history = []
-    else:
-        with open('history.json', 'r') as f:
-            history = json.load(f)
+    with open('history.json', 'r') as f:
+        history = json.load(f)
 
-    # Update and save the chat history
-    history.append(text)
-    with open('history.json', 'w') as f:
-        json.dump(history, f)
-
-    max_history_length = min(len(history), 7)
+    max_history_length = min(len(history), 9)
 
     # Send text to OpenAI API
     try:
@@ -60,7 +49,8 @@ def store_text():
         return jsonify({"error": str(e)}), 500
 
     # Store text and OpenAI API response in history.json
-    with open('history.json', 'w') as f:
+    with open('history.json', 'a+') as f:
+        f.seek(0)
         try:
             history = json.load(f)
         except json.JSONDecodeError:
