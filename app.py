@@ -75,7 +75,7 @@ def store_text():
     
     with open(datefile,'a+') as f:
         f.write(f'\nUser: {text}\nAI: {openai_response}')
-    #write_to_gsheet("./gsheet-secret.json", '1ox3ooXQJ5F8FmK0cmPhWfRMbkK8NgPWZjhY07trTktE', "Sheet1", message = [datefile, text, openai_response])
+    write_to_gsheet("./gsheet-secret.json", '1ox3ooXQJ5F8FmK0cmPhWfRMbkK8NgPWZjhY07trTktE', "Sheet1", message = [datefile, text, openai_response])
 
 
     # Store text and OpenAI API response in history.json
