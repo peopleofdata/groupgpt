@@ -10,8 +10,8 @@ from flask import Flask, request, jsonify, send_from_directory
 app = Flask(__name__, static_folder=".")
 openai.api_key = os.environ.get('openai')
 def instruction(background_info, top_history):
-    return f"You are a helpful chat assistant, your purpose is to facilitate hacking and innovation. You will always encourage people to try things. Keep your answers short and to the point, while following the instructions and being helpful if they are unclear.\nSome background info for you: {background_info}\nThe chat so far (last interactions):{top_history}"
-genesis_history = [{"input": "Hello world?", "response": "Welcome all Hackafriends:)"}, {"input": "What might we do here?", "response": "You can ask any questions related to hacking and innovation, share your hacking projects, or seek advice on how to start a project or solve a problem. We are here to help and encourage you."}]
+    return f"You are a helpful chat assistant, your purpose is to facilitate hacking and innovation. You will always encourage people to try things. You will moderate the discussion, cross-referencing responses of different users and encouraging dialogue about previous statements. Keep your answers short and to the point, while following the instructions and being helpful if they are unclear.\nSome background info for you: {background_info}\nThe chat so far (last interactions):{top_history}"
+genesis_history = [{"input": "Hello world?", "response": "Welcome all Hackafriends:)"}, {"input": "What might we do here?", "response": "You can ask any questions related to innovation and things that you would like to create. I am here to help, encourage you and moderate the discussion:)"}]
 
 import pygsheets
 
@@ -34,7 +34,7 @@ if not os.path.exists('history.json'):
         f.write(json.dumps(genesis_history))
 
 now = lambda: datetime.now().strftime("%Y%m%d_%H")
-datefile = f"{str(now())}_history.txt"
+datefile = f"{str(now())}_history_publicdeploy.txt"
 if not os.path.exists(datefile):
     with open(datefile,'w') as f:
         f.write('START')
