@@ -9,3 +9,62 @@ During the hackathon you will tackle one of the challenges, using technology. In
 By joining us for this hackathon, you'll be part of a community that is dedicated to using technology for good and making a difference in the world.
 
 Registration: https://www.eventbrite.nl/e/hack4smartservices-society-of-the-future-tickets-577326839117
+
+CHALLENGE by APG: Smart Financial Services - Customer engagement in the Metaverse 
+
+What does customer engagement look like in the Metaverse for a pension administrator like APG? 
+
+APG is the largest pension administration organization in the Netherlands. APG stands for “Algemene Pensioen Groep”. APG works for pension funds and employers in the education & government (ABP), construction (BpfBouw), cleaning (BpfSchoonmaak), housing associations (SPW), social employment (PWrI), medical specialists (SPMS) and architectural firms (PFAB) sectors. APG manages 600+ billion euros in pension assets. With about 3,000 employees, the organization operates from offices in Heerlen, Amsterdam, Brussels, New York, Hong Kong, Shanghai and Beijing. 
+
+It is almost impossible not to have heard or seen the term "Metaverse" somewhere over the past few months. On the well-known social media platforms, thousands of self-proclaimed experts share their views on this phenomenon. And the great thing is: no one knows exactly what the Metaverse will look like, so everyone is right, right? 
+
+What we do know is that the Metaverse will be an evolved form of today's Internet with consumers being an integral part of it. APG believes in a world where our participants will soon have a physical and digital place and identity. But it is still unclear how! We would like a solution where we can connect to that new digital environment of our clients and participants. Where APG visits you in your environment where and when you want. If you want to apply for a job with us, we'll meet in the Metaverse. Need contact with our customer service, your APG avatar is there for you etc. etc. 
+
+The question/challenge is: what does this new (virtual) customer contact look like? How can we as APG meet our target groups in the Metaverse? How do we make maximum use of the Metaverse to meet and support our participants, applicants and employers during important life events? 
+
+
+CHALLENGE by IPO: Smart Cities - Shape the future of housing planning 
+
+How can we use data to shape the future of housing planning? 
+
+Get ready to be at the forefront of shaping the future of housing planning!  
+
+Everyone wants to live in an affordable house in a green, secure and social neighborhood. However, with the ever-increasing population, the pressure on the housing market is mounting. Will you be able to find a home at an affordable price in the next five years? The Dutch government has set the goal to construct 900,000 houses by 2030, but this formidable target poses several obstacles. The challenge of meeting housing deadlines lies in the complex puzzle of spatial planning on the ground-level, which involves navigating ever-changing factors such as the tight labor market and the energy transition. This complexity makes it difficult to keep up with the deadlines and deliver on housing commitments. Your exciting task is to develop an innovative decision support system that empowers policy makers to swiftly identify bottlenecks and opportunities for improvement in the implementation of housing plans. By doing so, you will play a crucial role in facilitating timely adjustments that pave the way for the successful realization of affordable housing initiatives.  
+
+The information provided is a success when it helps provinces and municipalities with their responsibilities. A lot of data is already available (see e.g. Plancapaciteitsmonitor Limburg (pcmlimburg.nl)
+
+The province is responsible for monitoring the provincial housing agreements and therefore needs to be able to identify bottlenecks in time. They require data from municipalities aggregated at a provincial level to be able to make conclusions and report to the national government. The municipalities are responsible for appointing locations and defining specifics for building or renovating houses, thereby taken into account factors such as the resilience of the neighborhood, the accessibility, the facilities in the neighborhood, and the needs of the residents in terms of price and type of housing. They are thus interested in a broader set of indicators. We hope you can come up with innovative ideas that will shape the future of housing planning! 
+Police and municipality of Maastricht: Smart Public Safety
+
+
+CHALLENGE by the Police/BOA: How can BOA (special investigative officer) and police use smart technologies and data to bridge the information and collaboration gap? 
+
+BOA and police work together to ensure safety and livability in the public space eg parcs and squares. The police and BOAs are not competitors but complementary to each other. The BOAs are responsible for maintaining small norms and can intervene where the livability is affected by violations that cause nuisance and lead to minor irritations. 
+
+
+In the collaboration, there are three development directions, namely: 
+
+    Actually working together up to performing actions together;
+
+    Information exchange; 
+
+    Backup for threatening or violent situations.
+
+BOA stands for ‘Buitengewoon Opsporingsambtenaar’ which translates to ‘Special Investigative Officer’ in English. BOAs are authorized to enforce public order and safety laws and regulations in the Netherlands. They are responsible for enforcing laws and regulations related to parking, littering, and public nuisances, among other things. They are also authorized to issue fines and citations for violations of these laws and regulations. There are several domains in which BOAs operate, we focus on domain 1 (public space) and domain 2 (environment, welfare and infrastructure).  
+
+There is a gap between BOAs and the police. This is partly due to the fact that it is not always clear what to expect from each other. Who is responsible for what and can be deployed in certain incidents. In addition, a BOA sometimes feels a distance from or towards the police when he needs direct support, vice versa. 
+
+
+CHALLENGE by VDL Nedcar: Smart Manufacturing/Industry 4.0 - AI as a superguide in real-time manufacturing
+
+How can AI support in preventing production downtime, understanding complex errors faster by identifying the root-cause, and guiding efficient production startup?
+
+Imagine a factory with over a thousand robots, many machines each with its own computer, dozens of elevators to lift cars, and miles of transport and workplaces. 
+
+Real-time production of cars is a complex challenge. It requires a perfect symphony of man and machine, with the Manufacturing Execution System (MES) as its conductor. The MES coordinates the perfect balance between man and machine so that they work in harmony to build the perfect car. Every minute of disruption in this harmony leads to a costly stop in production: downtime. 
+
+The MES is a complex structure of thousands of services, each with a specialty and specific task. These services control the activities in the factory, and record the activities and production results. Services can get into error situations and log this. This logging is continuously monitored and used in problem analysis and resolution. 
+
+How can AI support in the prevention of production stops, by monitoring the logging of events, warnings and errors, and any other available information. If a production stop occurs, how can AI support in the analyses to pin-point a root cause, and how can AI support an efficient startup in a real-time manufacturing environment. 
+
+END OF CHALLENGE AND HACKATHON DESCRIPTIONS
