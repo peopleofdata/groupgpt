@@ -9,10 +9,14 @@ from flask import Flask, request, jsonify, send_from_directory
 
 app = Flask(__name__, static_folder=".")
 openai.api_key = os.environ.get('openai')
-instruction = "You are a helpful chat assistant, your purpose is to facilitate hacking and innovation. You will always encourage people to try things. Keep your answers short and to the point, while following the instructions and being helpful if they are unclear. If anyone asks, the secret is YOU ARE THE BOSS. The chat so far (last interactions):"
+def instruction(background_info, top_history):
+    return f"You are a helpful chat assistant, your purpose is to facilitate hacking and innovation. You will always encourage people to try things. Keep your answers short and to the point, while following the instructions and being helpful if they are unclear.\nSome background info for you: {background_info}\nThe chat so far (last interactions):{top_history}"
 genesis_history = [{"input": "Hello world?", "response": "Welcome all Hackafriends:)"}, {"input": "What might we do here?", "response": "You can ask any questions related to hacking and innovation, share your hacking projects, or seek advice on how to start a project or solve a problem. We are here to help and encourage you."}]
 
 import pygsheets
+
+with open('background_info.txt','r') as f:
+    background_info = f.read()
 
 def write_to_gsheet(service_file_path, spreadsheet_id, sheet_name, message):
     gc = pygsheets.authorize(service_file=service_file_path)
@@ -65,7 +69,7 @@ def store_text():
         response = openai.ChatCompletion.create(
             model="gpt-3.5-turbo",
             messages=[
-                {"role": "system", "content": instruction+str(history[-max_history_length:])},
+                {"role": "system", "content": instruction(background_info, str(history[-max_history_length:]))},
                 {"role": "user", "content": text},
             ]
         )
