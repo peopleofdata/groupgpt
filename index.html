@@ -1,26 +1,268 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>GroupGPT</title>
     <style>
+        html,
+        body,
+        div,
+        span,
+        p,
+        h5,
+        a,
+        code,
+        img,
+        strong,
+        u,
+        i,
+        ol,
+        ul,
+        li,
+        form {
+            margin: 0;
+            padding: 0;
+            border: 0;
+            font-size: 100%;
+            font: inherit;
+            vertical-align: baseline;
+        }
+
+        code {
+            display: block;
+            background-color: midnightblue;
+            color: ivory;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 1rem;
+            font-family: monospace;
+            font-size: 14px;
+            white-space: pre;
+            overflow-x: scroll;
+            max-width: 80vw;
+        }
+
+        #form-container {
+            display: flex;
+            flex-direction: column;
+            height: 95%;
+            justify-content: center;
+            align-items: center;
+            margin-top: 0.5rem;
+        }
+
+        textarea {
+            border: none;
+            border-radius: 5px;
+            resize: none;
+            transition: all 0.25s ease;
+            box-shadow: 0px 0px 5px #9ecaed;
+            padding: 1rem;
+
+        }
+
+        textarea:focus {
+            border-bottom: 2px solid #9ecaed;
+            box-shadow: 0px 0px 10px #9ecaed;
+            outline: none;
+        }
+
+        textarea:focus-visible {
+            border: none;
+        }
+
+        #form-container label {
+            font-family: monospace;
+            font-size: 0.85rem;
+            opacity: .5;
+            letter-spacing: 0.5px;
+        }
+
+        form {
+            display: grid;
+            grid-template-columns: 6fr 1fr;
+            gap: 0.25rem;
+            width: 95%;
+            max-width: 800px;
+            height: 80%;
+            margin: 1rem;
+        }
+
+        form button {
+            margin: 0 1rem;
+            border: none;
+            border-radius: 10px;
+            transition: all 0.25s ease;
+        }
+
+        form button:hover {
+            transform: scale(1.1);
+        }
+
+        form button:active {
+            transform: scale(0.9);
+        }
+
+        form button svg {
+            transform: rotate(-45deg) scale(0.6) translate(5px, 2px);
+            fill-opacity: 0.5;
+            transition: all 0.2s ease;
+        }
+
+        #hero {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            justify-content: center;
+            align-items: center;
+            font-family: monospace;
+
+            background-image: linear-gradient(to right, #00c6ff, #0072ff);
+            animation: gradient 10s ease infinite;
+        }
+
+        #hero h1 {
+            font-size: 2rem;
+            line-height: 0.5rem;
+        }
+
         #response {
-            white-space: pre-wrap;
+            overflow-y: scroll;
+        }
+
+        /* loader animation */
+        .lds-ripple {
+            display: inline-block;
+            position: relative;
+            width: 80px;
+            height: 80px;
+        }
+
+        .lds-ripple div {
+            position: absolute;
+            border: 4px solid teal;
+            opacity: 1;
+            border-radius: 50%;
+            animation: lds-ripple 1s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+        }
+
+        .lds-ripple div:nth-child(2) {
+            animation-delay: -0.5s;
+        }
+
+        @keyframes gradient {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        @keyframes lds-ripple {
+            0% {
+                top: 36px;
+                left: 36px;
+                width: 0;
+                height: 0;
+                opacity: 0;
+            }
+
+            4.9% {
+                top: 36px;
+                left: 36px;
+                width: 0;
+                height: 0;
+                opacity: 0;
+            }
+
+            5% {
+                top: 36px;
+                left: 36px;
+                width: 0;
+                height: 0;
+                opacity: 1;
+            }
+
+            100% {
+                top: 0px;
+                left: 0px;
+                width: 72px;
+                height: 72px;
+                opacity: 0;
+            }
         }
     </style>
     <script>
+        function formatCode(input) {
+            input = input.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+            var lines = input.split("\n");
+            for (var i = 0; i < lines.length; i++) {
+                lines[i] = "    " + lines[i];
+            }
+            var output = lines.join("\n");
+            return `${output}`;
+        }
+        function serializeCodeBlocks(str) {
+            let counter = 0;
+            while (str.indexOf("```") !== -1) {
+                if (counter % 2 === 0) {
+                    const startIndex = str.indexOf("```") + 3;
+                    const endIndex = str.indexOf("```", startIndex);
+                    const codeContent = str.substring(startIndex, endIndex);
+                    str = str.replace(
+                        "```" + codeContent + "```",
+                        `<code>${formatCode(codeContent)}</code>`
+                    );
+                    return serializeCodeBlocks(str);
+                } else {
+                    counter++;
+                }
+            }
+            return str;
+        }
         async function fetchHistory() {
             const responseDiv = document.getElementById("response");
             const response = await fetch("/get_history");
             const jsonResponse = await response.json();
-            responseDiv.textContent = jsonResponse.history.map((item, index) => `User: ${item.input}\nGPT-3.5: ${item.response}`).join('\n');
+            responseDiv.innerHTML = jsonResponse.history
+                .map(
+                    (item, index) => `
+            <div style='width: 100%;'>
+                <div style='display: flex; padding: 1rem'>
+                    <image src='https://api.dicebear.com/6.x/pixel-art/svg?seed=${item.input.length}' style='width: 50px; height: 50px; background-color: black; padding: 0.25rem; border-radius: 5px;'/>
+                    <p style='font-family: sans-serif; margin-left: 0.5rem; color: slategrey'>${item.input}</p>
+                </div>
+                <div style='display: flex; padding: 1rem; background-color: ghostwhite; border-top: 1px solid AntiqueWhite; border-bottom: 1px solid AntiqueWhite;'>
+                    <image src='https://api.dicebear.com/6.x/bottts-neutral/svg?seed=${item.input.length}' style='width: 50px; height: 50px; background-color: black; padding: 0.25rem; border-radius: 5px;'/>
+                    <div style='flex-direction: column;'>
+                        <p style='font-family: sans-serif; margin-left: 0.5rem;'>${serializeCodeBlocks(item.response)}</p>
+                    </div>
+                </div>
+            </div>
+            `
+                )
+                .join("\n");
+
         }
-    
+
         async function sendText() {
             const textInput = document.getElementById("text-input");
-            const sendButton = document.getElementById('sendButton');
+            const sendButton = document.getElementById("sendButton");
+            const textarea = document.getElementById("text-input");
+            const loader = document.getElementById("loader");
+            const svg = document.getElementById("svg-icon");
             sendButton.disabled = true;
+            textarea.disabled = true;
+            svg.style.display = 'none'
+            loader.style.display = 'inherit'
             const response = await fetch("/store_text", {
                 method: "POST",
                 headers: {
@@ -28,29 +270,73 @@
                 },
                 body: `text=${encodeURIComponent(textInput.value)}`,
             });
-    
+
             const jsonResponse = await response.json();
-            fetchHistory();
+            fetchHistory().then(() => {
+                const responseDiv = document.getElementById("response");
+                responseDiv.scrollTop = responseDiv.scrollHeight
+            });
             sendButton.disabled = false;
+            textarea.disabled = false;
+            textarea.value = ''
+            svg.style.display = 'inherit'
+            loader.style.display = 'none'
         }
-    
+
         window.onload = () => {
-            fetchHistory();
+            fetchHistory().then(() => {
+                const responseDiv = document.getElementById("response");
+                responseDiv.scrollTop = responseDiv.scrollHeight
+            });
             setInterval(fetchHistory, 7000);
+            var textarea = document.getElementById("text-input");
+            textarea.value = "";
+            textarea.addEventListener("keydown", function (event) {
+                if (event.keyCode === 13 && !event.shiftKey) {
+                    event.preventDefault();
+                    sendText();
+                    var value = textarea.value.trim();
+                    textarea.value = "";
+                }
+            });
         };
-    </script>    
+    </script>
 </head>
+
 <body>
-    <h1>GroupGPT</h1>
-    <h5>Rule 1: No dickheads allowed</h5>
-    <h5>Rule 2: For science & progress 🖖</h5>
-    <div id="response"></div>
-    <h5></h5>
-    <form onsubmit="event.preventDefault(); sendText();">
-        <label for="text-input">You:</label>
-        <input type="text" id="text-input" name="text" required>
-        <button type="submit" id="sendButton">Send</button>
-    </form>
-    <h5><a href='https://github.com/peopleofdata/groupgpt'>source code</a></h5>
+    <div id="github-logo" style="position: absolute; top: 10px; right: 10px;">
+        <a href="https://github.com/peopleofdata/groupgpt">
+
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                <path
+                    d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
+            </svg>
+        </a>
+    </div>
+    <div style="display: grid; grid-template-rows: 10vh 80vh 8vh">
+        <div id="hero">
+            <h1>GroupGPT</h1>
+            <h5>Rule 1: No dickheads allowed</h5>
+            <h5>Rule 2: For science & progress</h5>
+        </div>
+        <div id="response"></div>
+        <div id="form-container">
+            <form onsubmit="event.preventDefault(); sendText();">
+                <textarea type="text" id="text-input" name="text" required>
+                </textarea>
+                <button type="submit" id="sendButton">
+                    <div style="display: none" id="loader" class="lds-ripple">
+                        <div></div>
+                        <div></div>
+                    </div>
+                    <svg style="display: inherit" id="svg-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" fill="#000" />
+                    </svg>
+                </button>
+            </form>
+            <label for="text-input">Use Shift + Enter for line breaks. Press Enter to send.</label>
+        </div>
+    </div>
 </body>
+
 </html>
