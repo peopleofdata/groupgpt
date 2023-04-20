@@ -4,6 +4,7 @@ Setup (Windows):
 >>>python app.py
 """
 import json, os, openai
+from datetime import datetime
 from flask import Flask, request, jsonify, send_from_directory
 
 app = Flask(__name__, static_folder=".")
@@ -16,8 +17,10 @@ if not os.path.exists('history.json'):
     with open('history.json','w') as f:
         f.write(json.dumps(genesis_history))
 
-if not os.path.exists('raw-history.txt'):
-    with open('raw-history.txt','w') as f:
+now = lambda: datetime.now().strftime("%Y%m%d_%H")
+datefile = f"{str(now())}_history.txt"
+if not os.path.exists(datefile):
+    with open(datefile,'w') as f:
         f.write('START')
 
 @app.route('/')
@@ -58,7 +61,7 @@ def store_text():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
     
-    with open('raw-history.txt','a+') as f:
+    with open(datefile,'a+') as f:
         f.write(f'\nUser: {text}\nAI: {openai_response}')
 
     # Store text and OpenAI API response in history.json
