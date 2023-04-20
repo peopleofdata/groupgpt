@@ -16,6 +16,10 @@ if not os.path.exists('history.json'):
     with open('history.json','w') as f:
         f.write(json.dumps(genesis_history))
 
+if not os.path.exists('raw-history.txt'):
+    with open('raw-history.txt','w') as f:
+        f.write('START')
+
 @app.route('/')
 def index():
     return send_from_directory('.', 'index.html')
@@ -53,6 +57,9 @@ def store_text():
         openai_response = response.choices[0].message.content
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+    
+    with open('raw-history.txt','a+') as f:
+        f.write(f'\nUser: {text}\nAI: {openai_response}')
 
     # Store text and OpenAI API response in history.json
     with open('history.json', 'a+') as f:
@@ -68,6 +75,8 @@ def store_text():
         f.truncate()
         json.dump(history, f)
     return jsonify({"message": "Text stored successfully", "history": history, "response": openai_response}), 200
+
+
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))
