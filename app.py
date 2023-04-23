@@ -6,7 +6,7 @@ Setup (Windows):
 import json, os
 from datetime import datetime
 from flask import Flask, request, jsonify, send_from_directory
-from config import genesis_history, bot_role, background_info
+from config import version, genesis_history, bot_role, background_info
 from utils import write_to_gsheet, openai
 
 app = Flask(__name__, static_folder=".", static_url_path='')
@@ -20,11 +20,7 @@ if not os.path.exists('history.json'):
     with open('history.json','w') as f:
         f.write(json.dumps(genesis_history))
 
-now = lambda: datetime.now().strftime("%Y%m%d_%H")
-datefile = f"{str(now())}_history_publicdeploy.txt"
-if not os.path.exists(datefile):
-    with open(datefile,'w') as f:
-        f.write('START')
+now = lambda: datetime.now().strftime("%Y%m%d_%H%M%S")
 
 @app.route('/')
 def index():
@@ -64,10 +60,7 @@ def store_text():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
     
-    with open(datefile,'a+') as f:
-        f.write(f'\nUser: {text}\nAI: {openai_response}')
-    write_to_gsheet("./gsheet-secret.json", '1ox3ooXQJ5F8FmK0cmPhWfRMbkK8NgPWZjhY07trTktE', "Sheet1", message = [datefile, text, openai_response])
-
+    write_to_gsheet(row = [version, now(), text, openai_response])
 
     # Store text and OpenAI API response in history.json
     with open('history.json', 'a+') as f:
