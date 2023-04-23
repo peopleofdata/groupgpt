@@ -3,30 +3,17 @@ Setup (Windows):
 >>>$Env:openai='sk-m0Rf61S0m3rLgrOJhfFlT3BlbkFJBdObVoF2CCPIppyvoJ' but add '7k' at the end
 >>>python app.py
 """
-import json, os, openai
+import json, os
 from datetime import datetime
 from flask import Flask, request, jsonify, send_from_directory
+from config import genesis_history, bot_role, background_info
+from utils import write_to_gsheet, openai
 
 app = Flask(__name__, static_folder=".", static_url_path='')
 openai.api_key = os.environ.get('openai')
+
 def instruction(background_info, top_history):
-    return f"You are a helpful chat assistant, your purpose is to facilitate hacking and innovation. You will always encourage people to try things. You will moderate the discussion, cross-referencing responses of different users and encouraging dialogue about previous statements. Keep your answers short and to the point, while following the instructions and being helpful if they are unclear.\nSome background info for you: {background_info}\nThe chat so far (last interactions):{top_history}"
-genesis_history = [{"input": "Hello world?", "response": "Welcome all Hackafriends:)"}, {"input": "What might we do here?", "response": "You can ask any questions related to innovation and things that you would like to create. I am here to help, encourage you and moderate the discussion:)"}]
-
-import pygsheets
-
-with open('background_info.txt','r') as f:
-    background_info = f.read()
-
-def write_to_gsheet(service_file_path, spreadsheet_id, sheet_name, message):
-    gc = pygsheets.authorize(service_file=service_file_path)
-    sh = gc.open_by_key(spreadsheet_id)
-    try:
-        sh.add_worksheet(sheet_name)
-    except:
-        pass
-    wks_write = sh.worksheet_by_title(sheet_name)
-    wks_write.append_table([message], dimension='ROWS', overwrite=False)
+    return f"{bot_role}\nSome background info for you: {background_info}\nThe chat so far (last interactions):{top_history}"
 
 # this statements creates a history if there is no history file stored
 if not os.path.exists('history.json'):
@@ -96,8 +83,6 @@ def store_text():
         f.truncate()
         json.dump(history, f)
     return jsonify({"message": "Text stored successfully", "history": history, "response": openai_response}), 200
-
-
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))
