@@ -3,11 +3,10 @@ Setup (Windows):
 >>>$Env:openai='sk-m0Rf61S0m3rLgrOJhfFlT3BlbkFJBdObVoF2CCPIppyvoJ' but add '7k' at the end
 >>>python app.py
 """
-import json, os
+import json, os, openai
 from datetime import datetime
 from flask import Flask, request, jsonify, send_from_directory
-from config import version, genesis_history, bot_role, background_info
-from utils import write_to_gsheet, openai
+from utils import write_to_gsheet, deployment_name, genesis_history, bot_role, background_info
 
 app = Flask(__name__, static_folder=".", static_url_path='')
 openai.api_key = os.environ.get('openai')
@@ -60,7 +59,7 @@ def store_text():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
     
-    write_to_gsheet(row = [version, now(), text, openai_response])
+    write_to_gsheet(row = [deployment_name, now(), text, openai_response])
 
     # Store text and OpenAI API response in history.json
     with open('history.json', 'a+') as f:
