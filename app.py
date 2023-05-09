@@ -3,13 +3,13 @@ Setup (Windows):
 >>>$Env:openai='sk-m0Rf61S0m3rLgrOJhfFlT3BlbkFJBdObVoF2CCPIppyvoJ' but add '7k' at the end
 >>>python app.py
 """
-import json, os, openai
+import json, os, openai, dummy
 from datetime import datetime
 from flask import Flask, request, jsonify, send_from_directory
 from utils import write_to_gsheet, deployment_name, genesis_history, bot_role, background_info
 
 app = Flask(__name__, static_folder=".", static_url_path='')
-openai.api_key = os.environ.get('openai')
+openai.api_key = os.environ.get('openaikey')
 
 def instruction(background_info, top_history):
     return f"{bot_role}\nSome background info for you: {background_info}\nThe chat so far (last interactions):{top_history}"

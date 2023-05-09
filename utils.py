@@ -16,8 +16,7 @@ from google.oauth2 import service_account
 spreadsheet_id = '1ox3ooXQJ5F8FmK0cmPhWfRMbkK8NgPWZjhY07trTktE'
 scopes = ['https://www.googleapis.com/auth/spreadsheets']
 sheet_name = deployment_name
-envvar = os.environ.get('GDRIVE_API_CREDENTIAL')
-service_secret = json.loads(envvar)
+service_secret = os.environ.get('GDRIVE_API_CREDENTIAL')
 print(f'Service secret: {service_secret}')
 
 def write_to_gsheet(row, service_secret=service_secret):
