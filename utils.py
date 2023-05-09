@@ -10,14 +10,18 @@ with open('background_info.txt','r') as f:
     background_info = f.read()
 
 # Gsheet manipulation details
-import pygsheets
+import pygsheets, os, json
+from google.oauth2 import service_account
 
 spreadsheet_id = '1ox3ooXQJ5F8FmK0cmPhWfRMbkK8NgPWZjhY07trTktE'
+scopes = ['https://www.googleapis.com/auth/spreadsheets']
 sheet_name = deployment_name
-service_file_path = "./gsheet-secret.json"
 
 def write_to_gsheet(row):
-    gc = pygsheets.authorize(service_file=service_file_path)
+    envvar = os.environ.get('GDRIVE_API_CREDENTIAL')
+    service_secret = json.loads(envvar)
+    credentials = service_account.Credentials.from_service_account_info(service_secret, scopes=scopes)
+    gc = pygsheets.authorize(custom_credentials=credentials)
     sh = gc.open_by_key(spreadsheet_id)
     try:
         sh.add_worksheet(sheet_name)
