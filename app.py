@@ -6,7 +6,7 @@ Setup (Windows):
 import json, os, openai, dummy
 from datetime import datetime
 from flask import Flask, request, jsonify, send_from_directory
-from utils import write_to_gsheet, deployment_name, genesis_history, bot_role, background_info
+from utils import write_to_gsheet, deployment_name, genesis_history, background_info
 
 app = Flask(__name__, static_folder=".", static_url_path='')
 openai.api_key = os.environ.get('openaikey')
