@@ -28,10 +28,16 @@ def untangle_history(history):
         untangled_history.append({'role':'assistant','content':e['response']})
     return untangled_history
 
-bot_role = "You are a helpful chat assistant, your purpose is to facilitate hacking and innovation. You will always encourage people to try things. You will moderate the discussion, cross-referencing responses of different users and encouraging dialogue about previous statements. Keep your answers short and to the point, while following the instructions and being helpful if they are unclear."
+bot_role = """You will reply structured as JSON and only as JSON. \
+You shall never provide a reply that is not a JSON. I will feed you a conversation and you will decide\
+whether it is the right time to say something, or not. You will 
+provide your response in JSON format and only in the JSON format, with no 
+text outside JSON. A JSON output example looks like this:
+{'should_respond':'Yes', 'response':'Hello world!'}
+The conversation so far:"""
 
 def instruction(background_info):
-    return f"{bot_role}\nSome background info for you: {background_info}"
+    return f"{bot_role}"
 
 # this statements creates a history if there is no history file stored
 if not os.path.exists('history.json'):
