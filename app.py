@@ -10,6 +10,7 @@ from utils import write_to_gsheet, deployment_name, genesis_history, background_
 
 app = Flask(__name__, static_folder=".", static_url_path='')
 openai.api_key = os.environ.get('openaikey')
+history = genesis_history
 
 bot_role = "You are a helpful chat assistant, your purpose is to facilitate hacking and innovation. You will always encourage people to try things. You will moderate the discussion, cross-referencing responses of different users and encouraging dialogue about previous statements. Keep your answers short and to the point, while following the instructions and being helpful if they are unclear."
 
@@ -29,53 +30,34 @@ def index():
 
 @app.route('/get_history', methods=['GET'])
 def get_history():
-    with open('history.json', 'r') as f:
-        try:
-            history = json.load(f)
-        except json.JSONDecodeError:
-            history = []
-
+    global history
+    print(history)
     return jsonify({"history": history}), 200
 
 @app.route('/store_text', methods=['POST'])
-def store_text():
+def complete():
+    global history
     text = request.form.get('text')
     if not text:
         return jsonify({"error": "Text not provided"}), 400
 
-    with open('history.json', 'r') as f:
-        history = json.load(f)
-
     max_history_length = min(len(history), 9)
-
+    print(history, text)
     # Send text to OpenAI API
     try:
         response = openai.ChatCompletion.create(
             model="gpt-3.5-turbo",
             messages=[
-                {"role": "system", "content": instruction(background_info, str(history[-max_history_length:]))},
+                {"role": "system", "content": ""},#instruction(background_info, str(history[-max_history_length:]))},
                 {"role": "user", "content": text},
             ]
         )
         openai_response = response.choices[0].message.content
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-    
-    write_to_gsheet(row = [deployment_name, now(), text, openai_response])
-
-    # Store text and OpenAI API response in history.json
-    with open('history.json', 'a+') as f:
-        f.seek(0)
-        try:
-            history = json.load(f)
-        except json.JSONDecodeError:
-            history = []
-
-        history.append({"input": text, "response": openai_response})
-
-        f.seek(0)
-        f.truncate()
-        json.dump(history, f)
+    history.append({'input': text, 'response':openai_response})
+    print(openai_response)
+    #write_to_gsheet(row = [deployment_name, now(), text, openai_response])
     return jsonify({"message": "Text stored successfully", "history": history, "response": openai_response}), 200
 
 if __name__ == '__main__':
