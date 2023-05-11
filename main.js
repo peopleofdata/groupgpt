@@ -70,7 +70,7 @@ async function sendText() {
   textarea.disabled = true;
   svg.style.display = "none";
   loader.style.display = "inherit";
-  const response = await fetch("/complete", {
+  const response = await fetch("/store_text", {
     method: "POST",
     headers: {
       "Content-Type": "application/x-www-form-urlencoded",
