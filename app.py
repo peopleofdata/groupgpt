@@ -16,19 +16,10 @@ try:
     table = read_gsheet()
     print(table)
     for row in table:
-        history.append({'input': row['user'], 'response': row['assistant']})
+        history.append(json.loads(row['message']))#{'input': row['user'], 'response': row['assistant']})
 except:
     history = genesis_history
 print(history)
-
-def untangle_history(history):
-    untangled_history = []
-    for e in history:
-        if e['input']!="":
-            untangled_history.append({'role':'user','content':e['input']})
-        if e['response']!="":
-            untangled_history.append({'role':'assistant','content':e['response']})
-    return untangled_history
 
 bot_role = """You will reply structured as JSON and only as JSON. \
 You shall never provide a reply that is not a JSON. I will feed you a conversation and you will decide\
@@ -41,11 +32,6 @@ The conversation so far:"""
 def instruction(background_info):
     return f"{bot_role}"
 
-# this statements creates a history if there is no history file stored
-if not os.path.exists('history.json'):
-    with open('history.json','w') as f:
-        f.write(json.dumps(genesis_history))
-
 now = lambda: datetime.now().strftime("%Y%m%d_%H%M%S")
 
 @app.route('/')
@@ -55,8 +41,7 @@ def index():
 @app.route('/get_history', methods=['GET'])
 def get_history():
     global history
-    temp_history = untangle_history(history)
-    return jsonify({"history": temp_history}), 200
+    return jsonify({"history": history}), 200
 
 @app.route('/store_text', methods=['POST'])
 def complete():
@@ -72,7 +57,7 @@ def complete():
         response = openai.ChatCompletion.create(
             model="gpt-3.5-turbo",
             messages= [{"role": "system", "content": instruction(background_info)}]+
-            untangle_history(history)[-14:]+ [{"role": "user", "content": text}]
+            history[-14:]+ [{"role": "user", "content": text}]
         )
         openai_response = response.choices[0].message.content
     except Exception as e:
