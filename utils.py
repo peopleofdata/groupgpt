@@ -1,5 +1,5 @@
 # General information
-deployment_name = 'GroupGPT2'
+deployment_name = 'GroupGPTv0.2.0'
 
 # Loading prompt data
 genesis_history = [{"input": "Hello world?", "response": "Welcome all Hackafriends:)"}, {"input": "What might we do here?", "response": "You can ask any questions related to innovation and things that you would like to create. I am here to help, encourage you and moderate the discussion:)"}]

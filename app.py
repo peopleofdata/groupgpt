@@ -16,21 +16,15 @@ try:
     table = read_gsheet()
     print(table)
     for row in table:
-        history.append({'input': row['user'], 'response': row['assistant']})
+        history.append(json.loads(row['message']))#{'input': row['user'], 'response': row['assistant']})
 except:
     history = genesis_history
 print(history)
 
-def untangle_history(history):
-    untangled_history = []
-    for e in history:
-        untangled_history.append({'role':'user','content':e['input']})
-        untangled_history.append({'role':'assistant','content':e['response']})
-    return untangled_history
-
 bot_role = """You will reply structured as JSON and only as JSON. \
 You shall never provide a reply that is not a JSON. I will feed you a conversation and you will decide\
-whether it is the right time to say something, or not. You will 
+whether it is the right time to say something, or not. If the user instructs you to stop talking, you will not\
+respond and set 'should_respond' to 'No'. If you are asked by your name 'Nat' you will always reply. You will 
 provide your response in JSON format and only in the JSON format, with no 
 text outside JSON. A JSON output example looks like this:
 {'should_respond':'Yes', 'response':'Hello world!'}
@@ -38,11 +32,6 @@ The conversation so far:"""
 
 def instruction(background_info):
     return f"{bot_role}"
-
-# this statements creates a history if there is no history file stored
-if not os.path.exists('history.json'):
-    with open('history.json','w') as f:
-        f.write(json.dumps(genesis_history))
 
 now = lambda: datetime.now().strftime("%Y%m%d_%H%M%S")
 
@@ -53,8 +42,11 @@ def index():
 @app.route('/get_history', methods=['GET'])
 def get_history():
     global history
-    #print(history)
-    return jsonify({"history": history}), 200
+    temp_history = []
+    for e in history:
+        if e['role']=='user' or "'should_respond':'Yes'" in e['content']:
+            temp_history.append(e)
+    return jsonify({"history": temp_history}), 200
 
 @app.route('/store_text', methods=['POST'])
 def complete():
@@ -65,19 +57,31 @@ def complete():
 
     max_history_length = min(len(history), 9)
     print(history, text)
+    history.append({"role":"user", "content":text})
+    try:
+        print('Writing...')
+        write_to_gsheet(row = [deployment_name, now(), json.dumps({"role":"user", "content":text})])
+        print('Wrote!')
+    except Exception as e:
+        print(f'Sth wrong with writing to gsheet {e}')
     # Send text to OpenAI API
     try:
         response = openai.ChatCompletion.create(
             model="gpt-3.5-turbo",
             messages= [{"role": "system", "content": instruction(background_info)}]+
-            untangle_history(history)[-14:]+ [{"role": "user", "content": text}]
+            history[-14:]
         )
         openai_response = response.choices[0].message.content
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-    history.append({'input': text, 'response':openai_response})
-    print(openai_response)
-    write_to_gsheet(row = [deployment_name, now(), text, openai_response])
+    next_chat_line = {"role":"assistant", "content": openai_response}
+    history.append(next_chat_line)
+    try:
+        print('Writing...')
+        write_to_gsheet(row = [deployment_name, now(), json.dumps(next_chat_line)])
+        print('Wrote!')
+    except Exception as e:
+        print(f'Sth wrong with writing to gsheet {e}')
     return jsonify({"message": "Text stored successfully", "history": history, "response": openai_response}), 200
 
 if __name__ == '__main__':
