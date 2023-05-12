@@ -18,7 +18,7 @@ try:
     for row in table:
         history.append(json.loads(row['message']))#{'input': row['user'], 'response': row['assistant']})
 except Exception as e:
-    print(f'Exception {e}')
+    print(f'Exception in loading history {e}')
     history = genesis_history
 print(history)
 
@@ -44,8 +44,8 @@ def index():
 def get_history():
     global history
     temp_history = []
+    print(f"Fetching history from current state: {history}")
     for e in history:
-        print(e)
         try:
             if e["role"]=="user":
                 temp_history.append(e)
@@ -57,6 +57,7 @@ def get_history():
                 temp_history.append({"role":"assistant","content":text['content']})
         except:
             pass
+    print(f"Produced temp_history: {temp_history}")
     return jsonify({"history": temp_history}), 200
 
 @app.route('/store_text', methods=['POST'])
@@ -67,12 +68,12 @@ def complete():
         return jsonify({"error": "Text not provided"}), 400
 
     max_history_length = min(len(history), 9)
-    print(history, text)
+    print(f"Received a prompt from user: {text}")
     history.append({"role":"user", "content":text})
     try:
-        print('Writing...')
+        print('Writing user...')
         write_to_gsheet(row = [deployment_name, now(), json.dumps({"role":"user", "content":text})])
-        print('Wrote!')
+        print('Wrote user!')
     except Exception as e:
         print(f'Sth wrong with writing to gsheet {e}')
     # Send text to OpenAI API
@@ -88,9 +89,9 @@ def complete():
     next_chat_line = {"role":"assistant", "content": openai_response}
     history.append(next_chat_line)
     try:
-        print('Writing...')
+        print('Writing assistant...')
         write_to_gsheet(row = [deployment_name, now(), json.dumps(next_chat_line)])
-        print('Wrote!')
+        print('Wrote assistant!')
     except Exception as e:
         print(f'Sth wrong with writing to gsheet {e}')
     return jsonify({"message": "Text stored successfully", "history": history, "response": openai_response}), 200
