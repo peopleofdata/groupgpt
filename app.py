@@ -17,7 +17,8 @@ try:
     print(table)
     for row in table:
         history.append(json.loads(row['message']))#{'input': row['user'], 'response': row['assistant']})
-except:
+except Exception as e:
+    print(f'Exception {e}')
     history = genesis_history
 print(history)
 
@@ -44,8 +45,18 @@ def get_history():
     global history
     temp_history = []
     for e in history:
-        if e['role']=='user' or "'should_respond':'Yes'" in e['content']:
-            temp_history.append(e)
+        print(e)
+        try:
+            if e["role"]=="user":
+                temp_history.append(e)
+        except:
+            pass
+        try:
+            if "'should_respond':'Yes'" in e['content']:
+                text = json.loads(e['content'])
+                temp_history.append({"role":"assistant","content":text['content']})
+        except:
+            pass
     return jsonify({"history": temp_history}), 200
 
 @app.route('/store_text', methods=['POST'])
