@@ -24,8 +24,10 @@ print(history)
 def untangle_history(history):
     untangled_history = []
     for e in history:
-        untangled_history.append({'role':'user','content':e['input']})
-        untangled_history.append({'role':'assistant','content':e['response']})
+        if e['input']!="":
+            untangled_history.append({'role':'user','content':e['input']})
+        if e['response']!="":
+            untangled_history.append({'role':'assistant','content':e['response']})
     return untangled_history
 
 bot_role = """You will reply structured as JSON and only as JSON. \
@@ -53,8 +55,8 @@ def index():
 @app.route('/get_history', methods=['GET'])
 def get_history():
     global history
-    #print(history)
-    return jsonify({"history": history}), 200
+    temp_history = untangle_history(history)
+    return jsonify({"history": temp_history}), 200
 
 @app.route('/store_text', methods=['POST'])
 def complete():
