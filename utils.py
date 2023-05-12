@@ -2,7 +2,7 @@
 deployment_name = 'GroupGPTv0.2.0'
 
 # Loading prompt data
-genesis_history = [{"input": "Hello world?", "response": "Welcome all Hackafriends:)"}, {"input": "What might we do here?", "response": "You can ask any questions related to innovation and things that you would like to create. I am here to help, encourage you and moderate the discussion:)"}]
+genesis_history = [{"role":"user","content":"Hello world?"}, {"role":"assistant","content": "It's time to rock! I am here to help and moderate the discussion:)"}]
 
 with open('background_info.txt','r') as f:
     background_info = f.read()
