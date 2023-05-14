@@ -14,8 +14,11 @@ from google.oauth2 import service_account
 spreadsheet_id = '1ox3ooXQJ5F8FmK0cmPhWfRMbkK8NgPWZjhY07trTktE'
 scopes = ['https://www.googleapis.com/auth/spreadsheets']
 sheet_name = deployment_name
-service_secret = os.environ.get('GDRIVE_API_CREDENTIAL')
-service_secret = json.loads(service_secret)
+try:
+    service_secret = os.environ.get('GDRIVE_API_CREDENTIAL')
+    service_secret = json.loads(service_secret)
+except:
+    service_secret = json.load(open('./data/service_secret.json','r'))
 #print(f'Service secret: {service_secret}')
 def open_gsheet(service_secret=service_secret):
     credentials = service_account.Credentials.from_service_account_info(service_secret, scopes=scopes)
