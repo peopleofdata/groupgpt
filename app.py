@@ -49,14 +49,10 @@ def get_history():
         try:
             if e["role"]=="user":
                 temp_history.append(e)
+            elif e['role']=='assistant':
+                temp_history.append(e)
         except:
-            pass
-        try:
-            if "'should_respond':'Yes'" in e['content']:
-                text = json.loads(e['content'])
-                temp_history.append({"role":"assistant","content":text['content']})
-        except:
-            pass
+            print(f'/get_history error on fetching rows')
     print(f"Produced temp_history: {temp_history}")
     return jsonify({"history": temp_history}), 200
 
@@ -70,12 +66,7 @@ def complete():
     max_history_length = min(len(history), 9)
     print(f"Received a prompt from user: {text}")
     history.append({"role":"user", "content":text})
-    try:
-        print('Writing user...')
-        write_to_gsheet(row = [deployment_name, now(), json.dumps({"role":"user", "content":text})])
-        print('Wrote user!')
-    except Exception as e:
-        print(f'Sth wrong with writing to gsheet {e}')
+
     # Send text to OpenAI API
     try:
         response = openai.ChatCompletion.create(
@@ -86,11 +77,15 @@ def complete():
         openai_response = response.choices[0].message.content
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-    next_chat_line = {"role":"assistant", "content": openai_response}
-    history.append(next_chat_line)
+    msg = {"role":"assistant", "content": openai_response}
+    history.append(msg)
     try:
+        print('Writing user...')
+        print(history[-1])
+        write_to_gsheet(row = [deployment_name, now(), json.dumps(history[-1]), history[-1]['role'], history[-1]['content']])
+        print('Wrote user!')
         print('Writing assistant...')
-        write_to_gsheet(row = [deployment_name, now(), json.dumps(next_chat_line)])
+        write_to_gsheet(row = [deployment_name, now(), json.dumps(msg), msg['role'], msg['content']])
         print('Wrote assistant!')
     except Exception as e:
         print(f'Sth wrong with writing to gsheet {e}')
