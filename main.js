@@ -32,32 +32,37 @@ async function fetchHistory() {
   const responseDiv = document.getElementById("response");
   const response = await fetch("/get_history");
   const jsonResponse = await response.json();
-  responseDiv.innerHTML = jsonResponse.history
-    .map(
-      (item, index) => `
+  let html = "";
+  jsonResponse.history.forEach((item, index) => {
+    if (item.role === "user") {
+      html += `
             <div classname='response-box'>
                 <div classname='user-box' style='display: flex; padding: 1rem'>
                     <image src='https://api.dicebear.com/6.x/pixel-art/svg?seed=${
-                      item.input.length
+                      item.content.length
                     }' style='width: 50px; height: 50px; background-color: black; padding: 0.25rem; border-radius: 5px;'/>
                     <p style='font-family: sans-serif; margin-left: 0.5rem; color: slategrey'>${
-                      item.input
+                      item.content
                     }</p>
                 </div>
+            </div>`;
+    } else if (item.role === "assistant") {
+      html += `
+            <div classname='response-box'>
                 <div classname='box-box' style='display: flex; padding: 1rem; background-color: ghostwhite; border-top: 1px solid whitesmoke; border-bottom: 1px solid whitesmoke;'>
                     <image src='https://api.dicebear.com/6.x/bottts-neutral/svg?seed=${
-                      item.input.length
+                      item.content.length
                     }' style='width: 50px; height: 50px; background-color: black; padding: 0.25rem; border-radius: 5px;'/>
                     <div style='flex-direction: column;'>
                         <p style='font-family: sans-serif; margin-left: 0.5rem;'>${serializeCodeBlocks(
-                          item.response
+                          item.content
                         )}</p>
                     </div>
                 </div>
-            </div>
-            `
-    )
-    .join("\n");
+            </div>`;
+    }
+  });
+  responseDiv.innerHTML = html;
 }
 
 async function sendText() {

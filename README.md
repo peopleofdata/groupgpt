@@ -19,3 +19,8 @@ You can merge your own fixes into main to autodeploy & test. But stay away from 
 pip install -r requirements.txt
 add a system variable with openai api key (ask Oskar) like $openai='key'
 python app.py
+
+# To do:
+add a summarization feature
+memory for topics
+SPLIT generating the completion and appending the gsheet (the latter is less important)
