@@ -72,7 +72,7 @@ def index():
 @app.route('/refresh')
 def refresh():
     global history
-    history = history_from_gsheet
+    history = history_from_gsheet()
     return history
 
 def parse_history_for_display(history):
