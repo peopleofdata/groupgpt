@@ -9,7 +9,7 @@ from flask import Flask, request, jsonify, send_from_directory
 from utils import write_to_gsheet, deployment_name, genesis_history, background_info, read_gsheet
 
 app = Flask(__name__, static_folder=".", static_url_path='')
-openai.api_key = os.environ.get('openaikey')
+openai.api_key = os.environ.get('openai')
 
 try:
     history = []
