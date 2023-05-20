@@ -2,7 +2,8 @@
 deployment_name = 'GroupGPTv0.2.0'
 
 # Loading prompt data
-genesis_history = [{"input": "Hello world?", "response": "Welcome all Hackafriends:)"}, {"input": "What might we do here?", "response": "You can ask any questions related to innovation and things that you would like to create. I am here to help, encourage you and moderate the discussion:)"}]
+genesis_history = [{"role": "user", "content": "Welcome all Hackafriends:)"}, \
+                   {"role": "assistant", "content": "You can ask any questions related to innovation and things that you would like to create. I am here to help, encourage you and moderate the discussion:)"}]
 
 with open('background_info.txt','r') as f:
     background_info = f.read()
@@ -15,7 +16,7 @@ spreadsheet_id = '1ox3ooXQJ5F8FmK0cmPhWfRMbkK8NgPWZjhY07trTktE'
 scopes = ['https://www.googleapis.com/auth/spreadsheets']
 sheet_name = deployment_name
 service_secret = os.environ.get('GDRIVE_API_CREDENTIAL')
-service_secret = json.loads(service_secret)
+service_secret = json.loads(service_secret) if service_secret else {}
 #print(f'Service secret: {service_secret}')
 def open_gsheet(service_secret=service_secret):
     credentials = service_account.Credentials.from_service_account_info(service_secret, scopes=scopes)
