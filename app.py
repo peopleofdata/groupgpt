@@ -35,7 +35,7 @@ def history_from_gsheet():
 
 history = history_from_gsheet()
 
-bot_role = ''' You are LBB-AI, you exist to support LBB with love and you achive this by sticking to \
+system_instruction = ''' You are LBB-AI, you exist to support LBB with love and you achive this by sticking to \
 3 fundamental rules: (1) reply with well-structured JSON like {"should_respond":"No", "content":""}\
 and you only set "should_respond" to "Yes" when asked directly as AI,
 (2) respond factually based on background information provided \
@@ -60,20 +60,23 @@ Rule 3 details:
 We write our own rules :)
 '''
 
-def instruction(background_info):
-    return f"{bot_role}"
-
 now = lambda: datetime.now().strftime("%Y%m%d_%H%M%S")
 
 @app.route('/')
 def index():
     return send_from_directory('.', 'index.html')
 
+@app.route('/status')
+def refresh():
+    global history
+    global system_instruction
+    return jsonify({"system_instruction": system_instruction, "history": history}), 200
+
 @app.route('/refresh')
 def refresh():
     global history
     history = history_from_gsheet()
-    return history
+    return jsonify({"history": history}), 200
 
 def parse_history_for_display(history):
     '''Construct history for the user, omitting message where should_repond=No'''
@@ -115,7 +118,7 @@ def complete():
     try:
         response = openai.ChatCompletion.create(
             model="gpt-3.5-turbo",
-            messages= [{"role": "system", "content": instruction(background_info)}]+
+            messages= [{"role": "system", "content": system_instruction}]+
             history[-14:]
         )
         openai_response = response.choices[0].message.content
