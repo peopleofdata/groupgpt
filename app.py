@@ -18,16 +18,22 @@ openai.api_key = os.environ.get('openaikey')
 
 
 history = []
-table = read_gsheet()
-logger.debug(table)
-for row in table:
-    try:
-        history.append({'role':row['role'],'content':row['content']})#{'input': row['user'], 'response': row['assistant']})
-    except Exception as e:
-        logger.error(f'Exception in loading history {e} for row {row}')
-    #history = genesis_history
-logger.debug(history)
-logger.info(f'History has been prepared!')
+
+def history_from_gsheet():
+    global history
+    table = read_gsheet()
+    logger.debug(table)
+    for row in table:
+        try:
+            history.append({'role':row['role'],'content':row['content']})#{'input': row['user'], 'response': row['assistant']})
+        except Exception as e:
+            logger.error(f'Exception in loading history {e} for row {row}')
+        #history = genesis_history
+    logger.debug(history)
+    logger.info(f'History has been prepared!')
+    return history
+
+history = history_from_gsheet()
 
 bot_role = ''' You are LBB-AI, you exist to support LBB with love and you achive this by sticking to \
 3 fundamental rules: (1) reply with well-structured JSON like {"should_respond":"No", "content":""}\
@@ -63,24 +69,30 @@ now = lambda: datetime.now().strftime("%Y%m%d_%H%M%S")
 def index():
     return send_from_directory('.', 'index.html')
 
+@app.route('/refresh')
+def refresh():
+    global history
+    history = history_from_gsheet
+    return history
+
 def parse_history_for_display(history):
     '''Construct history for the user, omitting message where should_repond=No'''
     temp_history = []
-    print(f"Fetching history from current state: {history}")
+    #print(f"Fetching history from current state: {history}")
     for e in history:
         try:
             if e["role"]=="user":
                 temp_history.append(e)
             elif e['role']=='assistant':
                 content = json.loads(e['content'])
-                print(content, content.keys())
+                #print(content, content.keys())
                 if content['should_respond']=='Yes':
                     temp_history.append({"role":"assistant","content":content['content']})
                 else:
                     logger.debug(f'parse_history_for_display ommitted assistant message with should_respond!=Yes {e}')
         except Exception as exception:
             logger.error(f'/get_history error on fetching row {e} with exception {exception}')
-    print(f"Produced temp_history: {temp_history}")
+    #print(f"Produced temp_history: {temp_history}")
     return temp_history
 
 @app.route('/get_history', methods=['GET'])
@@ -96,7 +108,7 @@ def complete():
         return jsonify({"error": "Text not provided"}), 400
 
     max_history_length = min(len(history), 9)
-    print(f"Received a prompt from user: {text}")
+    #print(f"Received a prompt from user: {text}")
     history.append({"role":"user", "content":text})
 
     # Send text to OpenAI API
@@ -112,11 +124,11 @@ def complete():
     msg = {"role":"assistant", "content": openai_response}
     history.append(msg)
     try:
-        print('Writing user...')
+        #print('Writing user...')
         print(history[-1])
         write_to_gsheet(row = [deployment_name, now(), json.dumps(history[-2]), history[-2]['role'], history[-2]['content']])
         print('Wrote user!')
-        print('Writing assistant...')
+        #print('Writing assistant...')
         write_to_gsheet(row = [deployment_name, now(), json.dumps(msg), msg['role'], json.dumps(json.loads(msg['content']))])
         print('Wrote assistant!')
     except Exception as e:

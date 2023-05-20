@@ -1,3 +1,5 @@
+import dummy
+
 # General information
 try: 
     deployment_name = os.environ.get('DEPLOYMENT_NAME')
