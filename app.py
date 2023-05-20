@@ -67,7 +67,7 @@ def index():
     return send_from_directory('.', 'index.html')
 
 @app.route('/status')
-def refresh():
+def status():
     global history
     global system_instruction
     return jsonify({"system_instruction": system_instruction, "history": history}), 200
