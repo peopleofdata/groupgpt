@@ -1,5 +1,8 @@
 # General information
-deployment_name = 'GroupGPTv0.2.0'
+try: 
+    deployment_name = os.environ.get('DEPLOYMENT_NAME')
+except:
+    deployment_name = 'DeploymentError'
 
 # Loading prompt data
 genesis_history = [{"role":"user","content":"Hello world?"}, {"role":"assistant","content": "It's time to rock! I am here to help and moderate the discussion:)"}]
