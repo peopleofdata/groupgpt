@@ -4,7 +4,7 @@ import dummy
 try: 
     deployment_name = os.environ.get('DEPLOYMENT_NAME')
 except:
-    deployment_name = 'Alexej'
+    deployment_name = 'ClassA'
 
 # Loading prompt data
 genesis_history = [{"role":"user","content":"Hello world?"}, {"role":"assistant","content": "It's time to rock! I am here to help and moderate the discussion:)"}]
