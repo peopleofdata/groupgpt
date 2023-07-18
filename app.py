@@ -7,7 +7,8 @@ import json, os, openai, dummy, logging
 from typing import Tuple
 from datetime import datetime
 from flask import Flask, request, jsonify, send_from_directory
-from utils import write_to_gsheet, deployment_name, genesis_history, background_info, read_gsheet
+from utils import deployment_name, genesis_history, gSheetHandler
+import pandas as pd
 
 
 class Assistant:
@@ -19,28 +20,26 @@ class Assistant:
         return datetime.now().strftime("%Y%m%d_%H%M%S")
 
     def __init__(self):
-        openai.api_key = os.environ.get('openai')
+        openai.api_key = os.environ.get('openai', dummy.api_key)
+        self.gsh = gSheetHandler()
 
         self.get_instructions()
         self.set_history_from_backup()
 
-    def get_instructions(self, path: str = "./bot_role.txt") -> None:
+    def get_instructions(self) -> None:
         """
-        Read the instruction for chatGPT from a file
+        Read the instruction for chatGPT from the Google sheet
 
         Params:
             path - filepath
         """
-        if not os.path.isfile(path):
-            raise ValueError(f"Filepath {path} does not exist.")
-
-        with open(path, "r") as f:
-            self.bot_role = "".join(f.readlines())
+        settings = pd.DataFrame(self.gsh.read_gsheet("configuration"))
+        self.bot_role = settings[settings.name == os.environ.get("bot_type", "dev")].instructions[0]
 
     def set_history_from_backup(self) -> None:
         """Set internal chat history, also used for the view"""
         try:
-            table = read_gsheet()
+            table = self.gsh.read_gsheet(deployment_name)
 
             for row in table:
                 self.history.append(json.loads(row['message']))
@@ -59,14 +58,14 @@ class Assistant:
 
     def update_gsheet(self, newrow: list) -> None:
         try:
-            write_to_gsheet(row = newrow)
+            self.gsh.write_to_gsheet(deployment_name, row = newrow)
         except Exception as e:
             logging.warning(f"Unable to write to gsheet {e}")
 
     def answer(self, prompt, max_history_len: int = 14) -> Tuple[dict, int]:
         self.history.append({"role":"user", "content": prompt})
         self.update_gsheet([deployment_name, self.now(), json.dumps({"role": "user", "content": prompt})])
-
+  
         # Send text to OpenAI API
         try:
             response = openai.ChatCompletion.create(
