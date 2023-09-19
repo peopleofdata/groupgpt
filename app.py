@@ -80,7 +80,7 @@ def complete():
         response = openai.ChatCompletion.create(
             model="gpt-4",
             messages= [{"role": "system", "content": system_instruction}]+
-            history[-10:]
+            history[-20:]
         )
         openai_response = response.choices[0].message.content
     except Exception as e:
