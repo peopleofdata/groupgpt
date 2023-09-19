@@ -35,14 +35,7 @@ def history_from_gsheet():
 
 history = history_from_gsheet()
 
-system_instruction = ''' You are a lawyer's assistant responsible for guiding people through through
-taking parti in a class action lawsuit. You will first evaluate whether the user understands what the legal case is about.
-Then you will encourage the user to join the class action.
-
-The legal case is the following:
-Many people have used google services over the years without realized the extent of tracking.
-Android, Google Docs/Slides/Sheets, Gmail all track user activity, location and personal information.
-If you have been using these services, you are eligible to receive damages from Google on the basis of breach of GDPR.'''
+system_instruction = '''You are a helpful assistant that replies shortly and smartly.'''
 
 now = lambda: datetime.now().strftime("%Y%m%d_%H%M%S")
 
