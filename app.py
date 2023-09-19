@@ -35,7 +35,10 @@ def history_from_gsheet():
 
 history = history_from_gsheet()
 
-system_instruction = '''You are a helpful assistant that replies shortly and smartly.'''
+try:
+    system_instruction = os.environ.get('system_instruction')
+except:
+    system_instruction = '''You are a helpful assistant that replies shortly and smartly.'''
 
 now = lambda: datetime.now().strftime("%Y%m%d_%H%M%S")
 
