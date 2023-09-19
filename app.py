@@ -77,20 +77,21 @@ def complete():
         response = openai.ChatCompletion.create(
             model="gpt-4",
             messages= [{"role": "system", "content": system_instruction}]+
-            history[-14:]
+            history[-10:]
         )
         openai_response = response.choices[0].message.content
     except Exception as e:
         return jsonify({"error": str(e)}), 500
     msg = {"role":"assistant", "content": openai_response}
     history.append(msg)
+    print(f"Preparing to write messages to gsheet. User: {history[-2]} and System: {history[-1]}")
     try:
-        #print('Writing user...')
+        print('Writing user...')
         print(history[-1])
         write_to_gsheet(row = [deployment_name, now(), json.dumps(history[-2]), history[-2]['role'], history[-2]['content']])
         print('Wrote user!')
-        #print('Writing assistant...')
-        write_to_gsheet(row = [deployment_name, now(), json.dumps(msg), msg['role'], msg['content']])
+        print('Writing assistant...')
+        write_to_gsheet(row = [deployment_name, now(), json.dumps(history[-1]), history[-1]['role'], history[-1]['content']])
         print('Wrote assistant!')
     except Exception as e:
         print(f'Sth wrong with writing to gsheet {e}')
