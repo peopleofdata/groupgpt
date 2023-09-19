@@ -1,4 +1,4 @@
-import dummy
+import dummy, os
 
 # General information
 try: 
