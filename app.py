@@ -85,16 +85,22 @@ def complete():
     msg = {"role":"assistant", "content": openai_response}
     history.append(msg)
     print(f"Preparing to write messages to gsheet. User: {history[-2]} and System: {history[-1]}")
+    
     try:
         print('Writing user...')
         print(history[-1])
         write_to_gsheet(row = [deployment_name, now(), json.dumps(history[-2]), history[-2]['role'], history[-2]['content']])
         print('Wrote user!')
+    except Exception as e:
+        print(f'Sth wrong with writing USER to gsheet {e}')
+
+    try:
         print('Writing assistant...')
         write_to_gsheet(row = [deployment_name, now(), json.dumps(history[-1]), history[-1]['role'], history[-1]['content']])
         print('Wrote assistant!')
     except Exception as e:
-        print(f'Sth wrong with writing to gsheet {e}')
+        print(f'Sth wrong with writing SYSTEM to gsheet {e}')
+
     return jsonify({"message": "Text stored successfully", "history": history, "response": openai_response}), 200
 
 if __name__ == '__main__':
