@@ -163,7 +163,7 @@ form button svg {
   align-items: center;
   font-family: monospace;
 
-  background-image: linear-gradient(to right, #ffffff, #fff88f);
+  background-image: linear-gradient(to right, #15a4dd, #9803a6);
   animation: gradient 10s ease infinite;
 }
 
