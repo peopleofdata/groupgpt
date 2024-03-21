@@ -38,9 +38,7 @@ async function fetchHistory() {
       html += `
             <div classname='response-box'>
                 <div classname='user-box' style='display: flex; padding: 1rem'>
-                    <image src='https://api.dicebear.com/6.x/pixel-art/svg?seed=${
-                      item.content.length
-                    }' style='width: 50px; height: 50px; background-color: black; padding: 0.25rem; border-radius: 5px;'/>
+                    <image src='https://api.dicebear.com/6.x/pixel-art/svg?seed=80' style='width: 50px; height: 50px; background-color: black; padding: 0.25rem; border-radius: 5px;'/>
                     <p style='font-family: sans-serif; margin-left: 0.5rem; color: slategrey'>${
                       item.content
                     }</p>
@@ -50,9 +48,7 @@ async function fetchHistory() {
       html += `
             <div classname='response-box'>
                 <div classname='box-box' style='display: flex; padding: 1rem; background-color: ghostwhite; border-top: 1px solid whitesmoke; border-bottom: 1px solid whitesmoke;'>
-                    <image src='https://api.dicebear.com/6.x/bottts-neutral/svg?seed=${
-                      item.content.length
-                    }' style='width: 50px; height: 50px; background-color: black; padding: 0.25rem; border-radius: 5px;'/>
+                    <image src='https://api.dicebear.com/6.x/bottts-neutral/svg?seed=80' style='width: 50px; height: 50px; background-color: black; padding: 0.25rem; border-radius: 5px;'/>
                     <div style='flex-direction: column;'>
                         <p style='font-family: sans-serif; margin-left: 0.5rem;'>${serializeCodeBlocks(
                           item.content
